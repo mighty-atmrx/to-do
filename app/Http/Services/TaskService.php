@@ -16,9 +16,14 @@ class TaskService
         $this->repository = $repository;
     }
 
-    public function getAllTasks(): Collection
+    public function getAllTasks(int $userId): Collection
     {
-        return $this->repository->getAll();
+        return $this->repository->getAll($userId);
+    }
+
+    public function getMyTasks(int $userId): Collection
+    {
+        return $this->repository->getMyTasks($userId);
     }
 
     public function createTask(array $data): Task
@@ -38,7 +43,7 @@ class TaskService
         return $task;
     }
 
-    public function updateTask(int $id, array $data): Task
+    public function updateTask(int $id, array $data)
     {
         $task = $this->getTaskById($id);
         if (!$task) {
@@ -55,7 +60,7 @@ class TaskService
             );
         }
 
-        return $task->repository->update($data);
+        return $this->repository->update($data, $id);
     }
 
     public function deleteTask(int $id): void

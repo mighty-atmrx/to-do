@@ -12,6 +12,12 @@ class TaskRepository
         return Task::all();
     }
 
+    public function getMyTasks(int $userId): Collection
+    {
+        return Task::where('user_id', $userId)->get();
+    }
+
+
     public function create(array $data): Task
     {
         return Task::create($data);

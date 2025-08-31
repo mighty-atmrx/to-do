@@ -20,7 +20,15 @@ class TaskController extends Controller
 
     public function index(): JsonResponse
     {
-        $tasks = $this->taskService->getAllTasks();
+        $userId = auth()->user()->id;
+        $tasks = $this->taskService->getAllTasks($userId);
+        return response()->json($tasks, Response::HTTP_OK);
+    }
+
+    public function myTasks(): JsonResponse
+    {
+        $userId = auth()->user()->id;
+        $tasks = $this->taskService->getMyTasks($userId);
         return response()->json($tasks, Response::HTTP_OK);
     }
 

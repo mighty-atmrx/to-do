@@ -73,7 +73,6 @@ class AuthController extends Controller
 
     public function me(Request $request)
     {
-        dd(111);
         return response()->json($request->user());
     }
 }
