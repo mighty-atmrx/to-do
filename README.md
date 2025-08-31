@@ -1,61 +1,190 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# ToDo API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Простой **CRUD API для ToDo-листа** с поддержкой авторизации пользователей.
+Проект использует **Laravel 12**, упакован в Docker-контейнеры с **Nginx, backend(PHP) и MySQL**.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 📌 Основные возможности
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+* Регистрация и аутентификация пользователей через API (**Sanctum**).
+* CRUD операции для задач:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+    * Получение всех задач
+    * Получение только своих задач
+    * Создание задачи
+    * Просмотр конкретной задачи
+    * Обновление
+    * Удаление
+* Защищённые маршруты для авторизованных пользователей.
+* Валидация данных через **Form Requests**.
+* Полностью готов к использованию в SPA или мобильных приложениях.
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 🛠 Технологии
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+* **Laravel 12**
+* **PHP 8+**
+* **MySQL 8**
+* **Nginx**
+* **Docker & Docker Compose**
+* **Sanctum** для API токенов
+* **REST API** с JSON
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## 🐳 Docker-контейнеры
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+| Контейнер   | Назначение        | Порт                 |
+| ----------- | ----------------- | -------------------- |
+| `backend`   | PHP-FPM с Laravel | 9000 (внутри Docker) |
+| `webserver` | Nginx             | 8000                 |
+| `db`        | MySQL 8           | 3306                 |
 
-### Premium Partners
+### Команды Docker
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+* Запуск контейнеров:
 
-## Contributing
+```bash
+docker-compose up -d --build
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+* Остановка:
 
-## Code of Conduct
+```bash
+docker-compose down
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+* Логи контейнера:
 
-## Security Vulnerabilities
+```bash
+docker-compose logs -f backend
+docker-compose logs -f webserver
+docker-compose logs -f db
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+* Подключение к контейнеру:
 
-## License
+```bash
+docker-compose exec backend bash
+docker-compose exec db mysql -u root -p
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+## ⚙ Настройка
+
+1. Склонировать репозиторий:
+
+```bash
+git clone <repo_url>
+cd <repo_folder>
+```
+
+2. Создать `.env`:
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=db
+DB_PORT=3306
+DB_DATABASE=todo
+DB_USERNAME=todo
+DB_PASSWORD=12345678
+DB_ROOT_PASSWORD=root
+```
+
+3. Собрать и запустить Docker:
+
+```bash
+docker-compose up --build -d
+```
+
+4. Применить миграции:
+
+```bash
+docker-compose exec backend php artisan migrate
+```
+
+---
+
+## 🔗 API маршруты
+
+### Аутентификация
+
+| Метод | URL             | Описание                               |
+| ----- | --------------- | -------------------------------------- |
+| POST  | `/api/register` | Регистрация пользователя               |
+| POST  | `/api/login`    | Вход пользователя                      |
+| POST  | `/api/logout`   | Выход (Bearer токен)                   |
+| GET   | `/api/me`       | Получение данных текущего пользователя |
+
+### Задачи (Tasks)
+
+Все маршруты требуют токен **Bearer**:
+
+| Метод  | URL               | Описание                  |
+| ------ |-------------------|---------------------------|
+| GET    | `/api/tasks`      | Список всех задач         |
+| GET    | `/api/my-tasks`   | Список задач пользователя |
+| POST   | `/api/tasks`      | Создать новую задачу      |
+| GET    | `/api/tasks/{id}` | Получить одну задачу      |
+| PUT    | `/api/tasks/{id}` | Обновить задачу           |
+| DELETE | `/api/tasks/{id}` | Удалить задачу            |
+
+
+## ⚡ Проверка API
+
+* Через **Postman** или **curl**:
+
+```bash
+# Регистрация
+curl -X POST http://localhost:8000/api/register \
+-H "Content-Type: application/json" \
+-d '{"name":"John","email":"john@test.com","password":"password123","password_confirmation":"password123"}'
+
+# Логин
+curl -X POST http://localhost:8000/api/login \
+-H "Content-Type: application/json" \
+-d '{"email":"john@test.com","password":"password123"}'
+
+# Получение текущего пользователя (Bearer token)
+curl -X GET http://localhost:8000/api/me \
+-H "Authorization: Bearer <token>"
+
+# Получение всех задач (Bearer token)
+curl -X GET http://localhost:8000/api/tasks \
+-H "Authorization: Bearer <token>"
+
+# Получение своих задач (Bearer token)
+curl -X GET http://localhost:8000/api/my-tasks \
+-H "Authorization: Bearer <token>"
+
+# Создание задачи (Bearer token)
+curl -X POST http://localhost:8000/api/tasks \
+-H "Authorization: Bearer <token>" \
+-H "Content-Type: application/json" \
+-d '{"title":"test","description":"description", "status":"in_progress"}'
+
+# Просмотр задачи (Bearer token)
+curl -X GET http://localhost:8000/api/tasks/1 \
+-H "Authorization: Bearer <token>"
+
+# Обновление задачи (Bearer token)
+curl -X PATCH http://localhost:8000/api/tasks/1 \
+-H "Authorization: Bearer <token>" \
+-H "Content-Type: application/json" \
+-d '{"title":"updated test","description":"updated description","status":"completed"}'
+
+# Удаление задачи (Bearer token)
+curl -X DELETE http://localhost:8000/api/tasks/1 \
+-H "Authorization: Bearer <token>"
+```
+
+---
+
+## 💡 Примечания
+
+* Все ответы API в формате **JSON**.
+* Для всех защищённых маршрутов используйте **Bearer токен**.
+* Проект готов к расширению для SPA, мобильных приложений или фронтенд-фреймворков.
